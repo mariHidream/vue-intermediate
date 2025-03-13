@@ -1,38 +1,33 @@
 <template>
   <div>
-    <ul>
-        <li v-for="(todoItem, index) in todoItems" v-bind:key="todoItem" class="shadow">
-            {{ todoItem }}
+    <transition-group name="list" tag="ul">
+        <li v-for="(todoItem, index) in propsdata" v-bind:key="todoItem" class="shadow list-item">
+            <span class="checkBtn" 
+                v-on:click="toggleComplete(todoItem)"
+                v-bind:class="{checkBtnCompleted: todoItem.completed}" 
+            >
+                <i class="fas fa-check"></i>
+            </span>
+            <span v-bind:class="{textCompleted: todoItem.completed}">{{ todoItem.item }}</span>
             <span class="removeBtn" v-on:click="removeTodo(todoItem, index)">
                 <i class="fas fa-trash-alt"></i>
             </span>
         </li>
-    </ul>
+    </transition-group>
   </div>
 </template>
 
 <script>
 export default {
-    data : function(){
-        return {
-            todoItems : []
-        }
+  props :['propsdata'],
+  methods : {
+    removeTodo : function(todoItem, idx){
+      this.$emit('removeItem',todoItem, idx);
     },
-    methods : {
-        removeTodo : function(item, idx){
-            localStorage.removeItem(item);                                  
-            this.todoItems.splice(idx, 1);  
-        }
-    },
-    created : function(){
-        if(localStorage.length > 0){
-            for(let i = 0 ; i<localStorage.length; i++){
-                // if(localStorage.key(i)  !== 'loglevel:webpack-dev-server'){
-                    this.todoItems.push(localStorage.key(i));
-                // }
-            }
-        }
+    toggleComplete : function(todoItem, idx){
+      this.$emit('toggleItem', todoItem, idx);
     }
+  },
 }
 </script>
 
@@ -52,6 +47,7 @@ export default {
     padding: 0 0.9rem;
     background : white;
     border-radius: 5px;
+    align-items: center;
  }
  .checkBtn{
     line-height: 45px;
@@ -69,4 +65,12 @@ export default {
     margin-left: auto;
     color:#de4343;
  }
+
+.list-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
 </style>
