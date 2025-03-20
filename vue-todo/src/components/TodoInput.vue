@@ -28,15 +28,16 @@ export default {
     }
  },
  methods : {
-    addTodo : function(){
+    addTodo(){
         if(this.newTodoItem !== ''){
-            this.$emit('addTodoeItem',this.newTodoItem)
+            // this.$emit('addTodoeItem',this.newTodoItem)
+            this.$store.commit('addOneItem', this.newTodoItem);
             this.clearInput();
         }else{
             this.showModal = !this.showModal
         }
     },
-    clearInput : function(){
+    clearInput(){
         this.newTodoItem = '';
     }
  },
